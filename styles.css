@@ -1,0 +1,12 @@
+/* Add more space between the sections of the report page. */
+.tool_updatecheck-report .tool_updatecheck-section {
+    margin-bottom: 5rem;
+}
+
+/* Show the status 'Unknown' in the info colour instead of the green which Moodle core uses for it:
+   On the report page, 'Unknown' means that the update information is missing or outdated, which deserves attention.
+   The colour is taken from the theme, Bootstrap 5 provides it as --bs-info and Bootstrap 4 as --info. */
+.tool_updatecheck-report .tool_updatecheck-status-unknown .badge {
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: var(--bs-info, var(--info, #17a2b8)) !important;
+}

@@ -1,0 +1,192 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_updatecheck/report
+
+    Admin tool "Update check" - Report page which lists the available updates.
+
+    Context variables required for this template:
+    * lastfetchinfo - The information when the update information has been fetched for the last time
+    * fresh - True if the update information is fresh enough to be rated
+    * notfreshinfo - The warning which is shown if the update information is not fresh
+    * fetchfailureinfo - The information about the last failed attempt to fetch the update information, if any
+    * fetchbutton - The context of the core/single_button template for the button to fetch the update information right now
+    * settingsurl - The URL to the plugin settings
+    * statusurl - The URL to the system status report
+    * installedreleaseinfo - The information about the installed Moodle release
+    * corestatus - The status of the Moodle core updates (one of the \core\check\result status constants)
+    * corestatusbadge - The rendered status badge of the Moodle core updates
+    * hascoreupdates - True if there are Moodle core updates
+    * coreupdates - The list of Moodle core updates
+    * pluginstatus - The status of the plugin updates (one of the \core\check\result status constants)
+    * pluginstatusbadge - The rendered status badge of the plugin updates
+    * haspluginupdates - True if there are plugin updates
+    * pluginupdates - The list of plugin updates
+
+    Example context (json):
+    {
+        "lastfetchinfo": "Last successful fetch of the update information: Friday, 18 September 2026, 4:00 PM",
+        "fresh": true,
+        "notfreshinfo": "The update information is missing or older than 25 hours.",
+        "fetchfailureinfo": "The last attempt to fetch the update information (Friday, 18 September 2026, 4:00 PM) has failed: Unable to fetch available updates data - unexpected cURL error. (cURL error 28: Connection timed out). Cron will retry it.",
+        "fetchbutton": {
+            "id": "single_button_fetch",
+            "method": "post",
+            "type": "primary",
+            "url": "https://example.com/admin/tool/updatecheck/index.php?fetch=1",
+            "label": "Check for available updates now"
+        },
+        "settingsurl": "https://example.com/admin/settings.php?section=tool_updatecheck_settings",
+        "statusurl": "https://example.com/report/status/index.php",
+        "installedreleaseinfo": "Installed Moodle release: 4.5.2 (Build: 20250210)",
+        "corestatus": "warning",
+        "corestatusbadge": "<span class='badge bg-warning text-dark'>Warning</span>",
+        "hascoreupdates": true,
+        "coreupdates": [
+            {
+                "release": "5.0.1 (Build: 20250609)",
+                "version": "2025041401",
+                "ismajor": true,
+                "overdue": true,
+                "maturity": "Stable version",
+                "url": "https://download.moodle.org"
+            }
+        ],
+        "pluginstatus": "ok",
+        "pluginstatusbadge": "<span class='badge bg-success text-white'>OK</span>",
+        "haspluginupdates": true,
+        "pluginupdates": [
+            {
+                "name": "Opcache management",
+                "component": "tool_opcache",
+                "installedrelease": "v4.5-r1",
+                "installedversion": "2024100700",
+                "release": "v4.5-r5",
+                "version": "2024100704",
+                "maturity": "Stable version",
+                "url": "https://moodle.org/plugins/pluginversion.php?id=42750",
+                "ignored": false,
+                "missing": false
+            }
+        ]
+    }
+}}
+<div class="tool_updatecheck-report">
+    <div class="tool_updatecheck-section tool_updatecheck-updateinfo">
+        <p>
+            {{lastfetchinfo}}
+        </p>
+        {{^fresh}}
+            <div class="alert alert-warning">
+                {{notfreshinfo}}
+            </div>
+        {{/fresh}}
+        {{#fetchfailureinfo}}
+            <div class="alert alert-danger">
+                {{fetchfailureinfo}}
+            </div>
+        {{/fetchfailureinfo}}
+        {{#fetchbutton}}{{> core/single_button }}{{/fetchbutton}}
+        <a class="btn btn-secondary" href="{{statusurl}}">{{#str}} reportstatus, tool_updatecheck {{/str}}</a>
+        <a class="btn btn-secondary" href="{{settingsurl}}">{{#str}} settings, tool_updatecheck {{/str}}</a>
+    </div>
+
+    <div class="tool_updatecheck-section tool_updatecheck-coreupdates">
+        <h3>{{#str}} checkcoreupdates, tool_updatecheck {{/str}} <span class="ml-3 ms-3 tool_updatecheck-status-{{corestatus}}">{{{corestatusbadge}}}</span></h3>
+        <p>
+            {{installedreleaseinfo}}
+        </p>
+        {{#hascoreupdates}}
+            <table class="generaltable table">
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}} reportavailablerelease, tool_updatecheck {{/str}}</th>
+                        <th scope="col">{{#str}} reporttype, tool_updatecheck {{/str}}</th>
+                        <th scope="col">{{#str}} reportmaturity, tool_updatecheck {{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#coreupdates}}
+                        <tr>
+                            <td>
+                                {{#url}}<a href="{{url}}">{{release}}</a>{{/url}}
+                                {{^url}}{{release}}{{/url}}
+                                <br><small class="text-muted">{{version}}</small>
+                            </td>
+                            <td>
+                                {{#ismajor}}{{#str}} reporttypemajor, tool_updatecheck {{/str}}{{/ismajor}}
+                                {{^ismajor}}{{#str}} reporttypeminor, tool_updatecheck {{/str}}{{/ismajor}}
+                                {{#overdue}}
+                                    <span class="badge badge-danger bg-danger text-white">{{#str}} reportoverdue, tool_updatecheck {{/str}}</span>
+                                {{/overdue}}
+                            </td>
+                            <td>{{maturity}}</td>
+                        </tr>
+                    {{/coreupdates}}
+                </tbody>
+            </table>
+        {{/hascoreupdates}}
+        {{^hascoreupdates}}
+            <p>{{#str}} reportnocoreupdates, tool_updatecheck {{/str}}</p>
+        {{/hascoreupdates}}
+    </div>
+
+    <div class="tool_updatecheck-section tool_updatecheck-pluginupdates">
+        <h3>{{#str}} checkpluginupdates, tool_updatecheck {{/str}} <span class="ml-3 ms-3 tool_updatecheck-status-{{pluginstatus}}">{{{pluginstatusbadge}}}</span></h3>
+        {{#haspluginupdates}}
+            <table class="generaltable table">
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}} plugin {{/str}}</th>
+                        <th scope="col">{{#str}} reportinstalledversion, tool_updatecheck {{/str}}</th>
+                        <th scope="col">{{#str}} reportavailableversion, tool_updatecheck {{/str}}</th>
+                        <th scope="col">{{#str}} reportmaturity, tool_updatecheck {{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#pluginupdates}}
+                        <tr class="{{#ignored}}text-muted tool_updatecheck-ignored{{/ignored}}{{#missing}} tool_updatecheck-missing{{/missing}}" data-component="{{component}}">
+                            <td>
+                                {{name}}
+                                {{#ignored}}
+                                    <span class="badge badge-secondary bg-secondary text-dark">{{#str}} reportignored, tool_updatecheck {{/str}}</span>
+                                {{/ignored}}
+                                {{#missing}}
+                                    <span class="badge badge-warning bg-warning text-dark">{{#str}} reportmissing, tool_updatecheck {{/str}}</span>
+                                {{/missing}}
+                                <br><small class="text-muted">{{component}}</small>
+                            </td>
+                            <td>
+                                {{installedrelease}}
+                                <br><small class="text-muted">{{installedversion}}</small>
+                            </td>
+                            <td>
+                                {{#url}}<a href="{{url}}">{{release}}</a>{{/url}}
+                                {{^url}}{{release}}{{/url}}
+                                <br><small class="text-muted">{{version}}</small>
+                            </td>
+                            <td>{{maturity}}</td>
+                        </tr>
+                    {{/pluginupdates}}
+                </tbody>
+            </table>
+        {{/haspluginupdates}}
+        {{^haspluginupdates}}
+            <p>{{#str}} reportnopluginupdates, tool_updatecheck {{/str}}</p>
+        {{/haspluginupdates}}
+    </div>
+</div>
