@@ -4,7 +4,7 @@ moodle-tool_updatecheck
 Changes
 -------
 
-### Unreleased
+### v5.1-r1
 
 * 2026-09-18 - Prepare compatibility for Moodle 5.1.
 
