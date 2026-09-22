@@ -9,7 +9,7 @@ Moodle admin tool which exposes available Moodle core updates and plugin updates
 Requirements
 ------------
 
-This plugin requires Moodle 5.1+
+This plugin requires Moodle 5.2+
 
 
 Motivation for this plugin
