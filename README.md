@@ -1,7 +1,7 @@
 moodle-tool_updatecheck
 =======================
 
-[![Moodle Plugin CI](https://github.com/ssystems-de/moodle-tool_updatecheck/actions/workflows/moodle-plugin-ci.yml/badge.svg?branch=main)](https://github.com/ssystems-de/moodle-tool_updatecheck/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
+[![Moodle Plugin CI](https://github.com/ssystems-de/moodle-tool_updatecheck/actions/workflows/moodle-plugin-ci.yml/badge.svg?branch=MOODLE_405_STABLE)](https://github.com/ssystems-de/moodle-tool_updatecheck/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3AMOODLE_405_STABLE)
 
 Moodle admin tool which exposes available Moodle core updates and plugin updates as checks in Moodle's Checks API, so that they can be picked up by monitoring systems.
 
@@ -242,6 +242,19 @@ If there is at least one recipient selected, the plugin works like this:
 * The notifications are sent regardless of the update notification settings of Moodle core, i.e. even if update notifications are disabled with `$CFG->disableupdatenotifications` in config.php or if the setting "Automatically check for available updates" is disabled.
 * The notifications respect the settings of this plugin instead of the settings of Moodle core: Updates which do not have the required maturity, new builds which should not be considered and updates of ignored plugins are not announced.
 * If an admin fetches the update information manually with the "Check for available updates now" button on the report page, no notification is sent. Moodle core handles its own button in the same way.
+
+
+### Querying the checks with the CLI script of this plugin
+
+Besides the CLI script of Moodle core, this plugin ships its own CLI script which runs the two checks of this plugin only:
+
+```
+sudo -u www-data php admin/tool/updatecheck/cli/checks.php
+```
+
+It follows the same conventions as the CLI script of Moodle core (first line with the overall status, exit code 0 (OK), 1 (WARNING), 2 (CRITICAL) or 3 (UNKNOWN), the `--filter` and `--verbose` parameters), but it outputs the details of the checks on all supported Moodle versions. The CLI script of Moodle core outputs them only since Moodle 5.2. On Moodle 4.5, the list of available updates is not visible there at all, only the number from the summary.
+
+If you are running Moodle 4.5, please use this script instead of the CLI script of Moodle core.
 
 
 Setting the ignored plugins in config.php
