@@ -106,7 +106,7 @@
     </div>
 
     <div class="tool_updatecheck-section tool_updatecheck-coreupdates">
-        <h3>{{#str}} checkcoreupdates, tool_updatecheck {{/str}} <span class="ml-3 ms-3 tool_updatecheck-status-{{corestatus}}">{{{corestatusbadge}}}</span></h3>
+        <h3>{{#str}} checkcoreupdates, tool_updatecheck {{/str}} <span class="ms-3 tool_updatecheck-status-{{corestatus}}">{{{corestatusbadge}}}</span></h3>
         <p>
             {{installedreleaseinfo}}
         </p>
@@ -131,7 +131,7 @@
                                 {{#ismajor}}{{#str}} reporttypemajor, tool_updatecheck {{/str}}{{/ismajor}}
                                 {{^ismajor}}{{#str}} reporttypeminor, tool_updatecheck {{/str}}{{/ismajor}}
                                 {{#overdue}}
-                                    <span class="badge badge-danger bg-danger text-white">{{#str}} reportoverdue, tool_updatecheck {{/str}}</span>
+                                    <span class="badge bg-danger text-white">{{#str}} reportoverdue, tool_updatecheck {{/str}}</span>
                                 {{/overdue}}
                             </td>
                             <td>{{maturity}}</td>
@@ -146,7 +146,7 @@
     </div>
 
     <div class="tool_updatecheck-section tool_updatecheck-pluginupdates">
-        <h3>{{#str}} checkpluginupdates, tool_updatecheck {{/str}} <span class="ml-3 ms-3 tool_updatecheck-status-{{pluginstatus}}">{{{pluginstatusbadge}}}</span></h3>
+        <h3>{{#str}} checkpluginupdates, tool_updatecheck {{/str}} <span class="ms-3 tool_updatecheck-status-{{pluginstatus}}">{{{pluginstatusbadge}}}</span></h3>
         {{#haspluginupdates}}
             <table class="generaltable table">
                 <thead>
@@ -163,10 +163,10 @@
                             <td>
                                 {{name}}
                                 {{#ignored}}
-                                    <span class="badge badge-secondary bg-secondary text-dark">{{#str}} reportignored, tool_updatecheck {{/str}}</span>
+                                    <span class="badge bg-secondary text-dark">{{#str}} reportignored, tool_updatecheck {{/str}}</span>
                                 {{/ignored}}
                                 {{#missing}}
-                                    <span class="badge badge-warning bg-warning text-dark">{{#str}} reportmissing, tool_updatecheck {{/str}}</span>
+                                    <span class="badge bg-warning text-dark">{{#str}} reportmissing, tool_updatecheck {{/str}}</span>
                                 {{/missing}}
                                 <br><small class="text-muted">{{component}}</small>
                             </td>
