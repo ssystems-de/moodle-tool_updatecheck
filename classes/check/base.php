@@ -108,11 +108,11 @@ abstract class base extends check {
         // converts it to plain text) alike, and we do not know the consumer here. Thus, the separator has to be part of
         // the HTML, otherwise the lines would be glued together in the plain text. However, in the Moodle GUI, the lines
         // are broken by the block elements already and the separator would just be clutter. That's why it is hidden
-        // there: Visually with the sr-only (Bootstrap 4) and visually-hidden (Bootstrap 5) classes and additionally
+        // there: Visually with the visually-hidden class and additionally
         // from screen readers with the aria-hidden attribute, as they would read out loud separators like "slash" otherwise.
         // The conversion to plain text ignores the classes and the attribute, so the separator is kept there.
         // The separator does not need to be escaped as it is one of the hardcoded values from updateinfo::SEPARATORS.
-        $separator = \html_writer::span(updateinfo::get_separator(), 'sr-only visually-hidden', ['aria-hidden' => 'true']);
+        $separator = \html_writer::span(updateinfo::get_separator(), 'visually-hidden', ['aria-hidden' => 'true']);
 
         // Wrap each line into an inline element which is displayed as block in the Moodle GUI.
         $lines = array_map(function ($line) {
