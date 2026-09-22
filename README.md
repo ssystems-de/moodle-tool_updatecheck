@@ -1,7 +1,7 @@
 moodle-tool_updatecheck
 =======================
 
-[![Moodle Plugin CI](https://github.com/ssystems-de/moodle-tool_updatecheck/actions/workflows/moodle-plugin-ci.yml/badge.svg?branch=main)](https://github.com/ssystems-de/moodle-tool_updatecheck/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3Amain)
+[![Moodle Plugin CI](https://github.com/ssystems-de/moodle-tool_updatecheck/actions/workflows/moodle-plugin-ci.yml/badge.svg?branch=MOODLE_500_STABLE)](https://github.com/ssystems-de/moodle-tool_updatecheck/actions?query=workflow%3A%22Moodle+Plugin+CI%22+branch%3AMOODLE_500_STABLE)
 
 Moodle admin tool which exposes available Moodle core updates and plugin updates as checks in Moodle's Checks API, so that they can be picked up by monitoring systems.
 
