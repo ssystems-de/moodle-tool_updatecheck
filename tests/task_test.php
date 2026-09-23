@@ -80,9 +80,10 @@ final class task_test extends \advanced_testcase {
         $this->assertStringContainsString($failure->message, $details);
 
         // As soon as a fetch succeeds, the failure is forgotten.
+        // The fetch time is stored by Moodle core with the real clock, so it is not compared with the frozen clock.
         $generator->set_remote_update_response([]);
         (new fetch_updates_adhoc())->execute();
-        $this->assertSame($now, updateinfo::get_last_fetch());
+        $this->assertNotNull(updateinfo::get_last_fetch());
         $this->assertNull(updateinfo::get_last_fetch_failure());
         $this->assertStringNotContainsString(
             get_string('reportfetcherror_err_response_empty', 'tool_updatecheck'),

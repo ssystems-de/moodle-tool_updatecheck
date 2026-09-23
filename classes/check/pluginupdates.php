@@ -64,18 +64,20 @@ class pluginupdates extends base {
         }
 
         // Compose the details.
-        // The number of plugins with available updates is always added as its own line after the list of updates
-        // (even if it is 0) to allow monitoring systems to get all information from the details alone.
+        // Unless disabled in the settings, the number of plugins with available updates is added as its own line after
+        // the list of updates (even if it is 0) to allow monitoring systems to get all information from the details alone.
         $available = get_string('checkpluginupdatesavailable', 'tool_updatecheck', count($items));
         $lines = $items;
-        $lines[] = $available;
-        if ($ignoredcount > 0) {
-            $lines[] = get_string('checkpluginupdatesignored', 'tool_updatecheck', $ignoredcount);
+        if (updateinfo::show_summary_lines()) {
+            $lines[] = $available;
+            if ($ignoredcount > 0) {
+                $lines[] = get_string('checkpluginupdatesignored', 'tool_updatecheck', $ignoredcount);
+            }
+            if ($missingcount > 0) {
+                $lines[] = get_string('checkpluginupdatesmissing', 'tool_updatecheck', $missingcount);
+            }
+            $lines[] = updateinfo::get_last_fetch_info();
         }
-        if ($missingcount > 0) {
-            $lines[] = get_string('checkpluginupdatesmissing', 'tool_updatecheck', $missingcount);
-        }
-        $lines[] = updateinfo::get_last_fetch_info();
         $details = $this->format_details($lines);
 
         // If there is not any update which counts, we are good.
