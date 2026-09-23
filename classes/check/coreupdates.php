@@ -60,12 +60,14 @@ class coreupdates extends base {
         }
 
         // Compose the details.
-        // The number of available updates is always added as its own line after the list of updates (even if it is 0)
-        // to allow monitoring systems to get all information from the details alone.
+        // Unless disabled in the settings, the number of available updates is added as its own line after the list of
+        // updates (even if it is 0) to allow monitoring systems to get all information from the details alone.
         $available = get_string('checkcoreupdatesavailable', 'tool_updatecheck', count($items));
         $lines = $items;
-        $lines[] = $available;
-        $lines[] = updateinfo::get_last_fetch_info();
+        if (updateinfo::show_summary_lines()) {
+            $lines[] = $available;
+            $lines[] = updateinfo::get_last_fetch_info();
+        }
         $details = $this->format_details($lines);
 
         // If there is not any update, we are good.

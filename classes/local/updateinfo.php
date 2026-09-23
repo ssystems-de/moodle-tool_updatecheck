@@ -80,13 +80,20 @@ class updateinfo {
      * @var string[] The available separators between the lines of the check details, indexed by their setting value.
      *               The first one is the default.
      */
-    const SEPARATORS = [
+    const API_SEPARATORS = [
         'semicolon' => '; ',
         'slash' => ' / ',
         'doublecolon' => ' :: ',
         'hash' => ' # ',
         'hyphen' => ' - ',
     ];
+
+    /**
+     * @var string[] The available separators between the lines of the check details in the CLI script of this plugin,
+     *               indexed by their setting value. In contrast to the Checks API, the CLI script is able to output
+     *               multiple lines, so the newline is available as well and is the default.
+     */
+    const CLI_SEPARATORS = ['newline' => "\n"] + self::API_SEPARATORS;
 
     /** @var string[] The check result statuses which can be configured, ordered by ascending severity. */
     const CONFIGURABLE_STATUSES = [result::INFO, result::WARNING, result::ERROR, result::CRITICAL];
@@ -602,11 +609,8 @@ class updateinfo {
      * @return string
      */
     public static function format_plugin_name(string $component, string $name, ?string $format = null): string {
-        if ($format === null) {
-            $format = get_config('tool_updatecheck', 'checksapipluginnameformat');
-        }
-        if (!in_array($format, self::NAMEFORMATS)) {
-            $format = self::NAMEFORMATS[0];
+        if ($format === null || !in_array($format, self::NAMEFORMATS)) {
+            $format = self::get_nameformat();
         }
 
         switch ($format) {
@@ -644,26 +648,60 @@ class updateinfo {
     /**
      * Get the configured separator between the lines of the check details.
      *
+     * @param bool $cli True to get the separator for the CLI script of this plugin, false to get the one for the Checks API.
      * @return string
      */
-    public static function get_separator(): string {
+    public static function get_separator(bool $cli = false): string {
+        if ($cli) {
+            $separator = get_config('tool_updatecheck', 'checkscliseparator');
+
+            return self::CLI_SEPARATORS[$separator] ?? self::CLI_SEPARATORS[array_key_first(self::CLI_SEPARATORS)];
+        }
+
         $separator = get_config('tool_updatecheck', 'checksapiseparator');
 
-        return self::SEPARATORS[$separator] ?? self::SEPARATORS[array_key_first(self::SEPARATORS)];
+        return self::API_SEPARATORS[$separator] ?? self::API_SEPARATORS[array_key_first(self::API_SEPARATORS)];
     }
 
     /**
-     * Get the options for the separator setting.
+     * Get the options for the separator settings.
      *
-     * @return string[] Array of separator names, indexed by the keys of the SEPARATORS constant.
+     * @param bool $cli True to get the options for the CLI script of this plugin, false to get the ones for the Checks API.
+     * @return string[] Array of separator names, indexed by the keys of the API_SEPARATORS or CLI_SEPARATORS constant.
      */
-    public static function get_separator_options(): array {
+    public static function get_separator_options(bool $cli = false): array {
         $options = [];
-        foreach (array_keys(self::SEPARATORS) as $separator) {
+        foreach (array_keys($cli ? self::CLI_SEPARATORS : self::API_SEPARATORS) as $separator) {
             $options[$separator] = get_string('setting_checksapiseparator_' . $separator, 'tool_updatecheck');
         }
 
         return $options;
+    }
+
+    /**
+     * Check if the summary lines should be part of the details of the checks.
+     *
+     * The summary lines are the lines which follow the list of updates: The number of available updates, the number of
+     * ignored plugins and of plugins missing from disk with available updates, and the time of the last successful fetch.
+     *
+     * @return bool
+     */
+    public static function show_summary_lines(): bool {
+        $setting = get_config('tool_updatecheck', 'checkssummarylines');
+
+        // The summary lines are shown by default, i.e. as long as the setting has not been saved yet.
+        return $setting === false || (bool) $setting;
+    }
+
+    /**
+     * Get the configured plugin name format for the list of plugin updates in the plugin updates check.
+     *
+     * @return string One of the NAMEFORMAT_* constants.
+     */
+    public static function get_nameformat(): string {
+        $format = get_config('tool_updatecheck', 'checkspluginnameformat');
+
+        return in_array($format, self::NAMEFORMATS) ? $format : self::NAMEFORMATS[0];
     }
 
     /**

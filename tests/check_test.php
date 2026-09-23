@@ -188,7 +188,7 @@ final class check_test extends \advanced_testcase {
             updateinfo::NAMEFORMAT_COMPONENT => '<span class="d-block">tool_updatecheck: ',
         ];
         foreach ($formats as $format => $expected) {
-            set_config('checksapipluginnameformat', $format, 'tool_updatecheck');
+            set_config('checkspluginnameformat', $format, 'tool_updatecheck');
             $this->assertStringContainsString(
                 $expected . $installedrelease . ' to v99.0-r1',
                 (new pluginupdates())->get_result()->get_details()
@@ -204,6 +204,43 @@ final class check_test extends \advanced_testcase {
             get_string('checkpluginupdatesignored', 'tool_updatecheck', 1),
             $result->get_details()
         );
+    }
+
+    /**
+     * Test that the summary lines of the details can be disabled.
+     */
+    public function test_summary_lines_can_be_disabled(): void {
+        $this->resetAfterTest();
+        $this->get_generator()->create_core_update(['type' => 'minor']);
+        $this->get_generator()->create_plugin_update(['component' => 'tool_updatecheck', 'release' => 'v99.0-r1']);
+        set_config('pluginsignored', 'tool_updatecheck', 'tool_updatecheck');
+        $lastfetch = html_to_text(updateinfo::get_last_fetch_info(), 0, false);
+
+        // By default, the summary lines are part of the details.
+        $details = html_to_text((new coreupdates())->get_result()->get_details(), 0, false);
+        $this->assertStringContainsString(get_string('checkcoreupdatesavailable', 'tool_updatecheck', 1), $details);
+        $this->assertStringContainsString($lastfetch, $details);
+        $details = html_to_text((new pluginupdates())->get_result()->get_details(), 0, false);
+        $this->assertStringContainsString(get_string('checkpluginupdatesavailable', 'tool_updatecheck', 0), $details);
+        $this->assertStringContainsString(get_string('checkpluginupdatesignored', 'tool_updatecheck', 1), $details);
+        $this->assertStringContainsString($lastfetch, $details);
+
+        // If they are disabled, the details just consist of the list of updates. The summary is not affected.
+        set_config('checkssummarylines', 0, 'tool_updatecheck');
+        updateinfo::purge_cache();
+        $result = (new coreupdates())->get_result();
+        $details = html_to_text($result->get_details(), 0, false);
+        $this->assertSame(get_string('checkcoreupdatesavailable', 'tool_updatecheck', 1), $result->get_summary());
+        $this->assertStringContainsString('Minor release', $details);
+        $this->assertStringNotContainsString(get_string('checkcoreupdatesavailable', 'tool_updatecheck', 1), $details);
+        $this->assertStringNotContainsString($lastfetch, $details);
+        $details = html_to_text((new pluginupdates())->get_result()->get_details(), 0, false);
+        $this->assertSame('', trim($details));
+
+        // The details for missing update information are not affected.
+        $this->get_generator()->set_update_response([], time() - 2 * DAYSECS);
+        $details = html_to_text((new coreupdates())->get_result()->get_details(), 0, false);
+        $this->assertStringContainsString(get_string('checkunknowndetails', 'tool_updatecheck'), $details);
     }
 
     /**
@@ -277,7 +314,7 @@ final class check_test extends \advanced_testcase {
         }
 
         // The setting offers all separators.
-        $this->assertSame(array_keys(updateinfo::SEPARATORS), array_keys(updateinfo::get_separator_options()));
+        $this->assertSame(array_keys(updateinfo::API_SEPARATORS), array_keys(updateinfo::get_separator_options()));
     }
 
     /**
