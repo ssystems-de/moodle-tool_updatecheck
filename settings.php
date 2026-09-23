@@ -81,11 +81,39 @@ if ($hassiteconfig) {
         );
         $settings->add($setting);
 
+        // Create common checks heading.
+        $setting = new admin_setting_heading(
+            'tool_updatecheck/checkscommonheading',
+            get_string('setting_checkscommonheading', 'tool_updatecheck', null, true),
+            get_string('setting_checkscommonheading_desc', 'tool_updatecheck', null, true)
+        );
+        $settings->add($setting);
+
+        // Create plugin name format widget.
+        $setting = new admin_setting_configselect(
+            'tool_updatecheck/checkspluginnameformat',
+            get_string('setting_checkspluginnameformat', 'tool_updatecheck', null, true),
+            get_string('setting_checkspluginnameformat_desc', 'tool_updatecheck', null, true),
+            updateinfo::NAMEFORMATS[0],
+            updateinfo::get_nameformat_options()
+        );
+        $settings->add($setting);
+
+        // Create summary lines widget.
+        $setting = new admin_setting_configselect(
+            'tool_updatecheck/checkssummarylines',
+            get_string('setting_checkssummarylines', 'tool_updatecheck', null, true),
+            get_string('setting_checkssummarylines_desc', 'tool_updatecheck', null, true),
+            1,
+            [1 => get_string('yes'), 0 => get_string('no')]
+        );
+        $settings->add($setting);
+
         // Create Checks API heading.
         $setting = new admin_setting_heading(
             'tool_updatecheck/checksapiheading',
             get_string('setting_checksapiheading', 'tool_updatecheck', null, true),
-            ''
+            get_string('setting_checksapiheading_desc', 'tool_updatecheck', null, true)
         );
         $settings->add($setting);
 
@@ -94,18 +122,26 @@ if ($hassiteconfig) {
             'tool_updatecheck/checksapiseparator',
             get_string('setting_checksapiseparator', 'tool_updatecheck', null, true),
             get_string('setting_checksapiseparator_desc', 'tool_updatecheck', null, true),
-            array_key_first(updateinfo::SEPARATORS),
+            array_key_first(updateinfo::API_SEPARATORS),
             updateinfo::get_separator_options()
         );
         $settings->add($setting);
 
-        // Create plugin name format widget.
+        // Create Checks CLI heading.
+        $setting = new admin_setting_heading(
+            'tool_updatecheck/checkscliheading',
+            get_string('setting_checkscliheading', 'tool_updatecheck', null, true),
+            get_string('setting_checkscliheading_desc', 'tool_updatecheck', null, true)
+        );
+        $settings->add($setting);
+
+        // Create Checks CLI separator widget.
         $setting = new admin_setting_configselect(
-            'tool_updatecheck/checksapipluginnameformat',
-            get_string('setting_checksapipluginnameformat', 'tool_updatecheck', null, true),
-            get_string('setting_checksapipluginnameformat_desc', 'tool_updatecheck', null, true),
-            updateinfo::NAMEFORMATS[0],
-            updateinfo::get_nameformat_options()
+            'tool_updatecheck/checkscliseparator',
+            get_string('setting_checkscliseparator', 'tool_updatecheck', null, true),
+            get_string('setting_checkscliseparator_desc', 'tool_updatecheck', null, true),
+            array_key_first(updateinfo::CLI_SEPARATORS),
+            updateinfo::get_separator_options(true)
         );
         $settings->add($setting);
 

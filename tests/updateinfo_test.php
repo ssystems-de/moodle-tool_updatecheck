@@ -459,15 +459,15 @@ final class updateinfo_test extends \advanced_testcase {
         $this->assertSame('mod_foo (Foo)', updateinfo::format_plugin_name('mod_foo', 'Foo'));
 
         // The format can be configured.
-        set_config('checksapipluginnameformat', updateinfo::NAMEFORMAT_NAMECOMPONENT, 'tool_updatecheck');
+        set_config('checkspluginnameformat', updateinfo::NAMEFORMAT_NAMECOMPONENT, 'tool_updatecheck');
         $this->assertSame('Foo (mod_foo)', updateinfo::format_plugin_name('mod_foo', 'Foo'));
-        set_config('checksapipluginnameformat', updateinfo::NAMEFORMAT_NAME, 'tool_updatecheck');
+        set_config('checkspluginnameformat', updateinfo::NAMEFORMAT_NAME, 'tool_updatecheck');
         $this->assertSame('Foo', updateinfo::format_plugin_name('mod_foo', 'Foo'));
-        set_config('checksapipluginnameformat', updateinfo::NAMEFORMAT_COMPONENT, 'tool_updatecheck');
+        set_config('checkspluginnameformat', updateinfo::NAMEFORMAT_COMPONENT, 'tool_updatecheck');
         $this->assertSame('mod_foo', updateinfo::format_plugin_name('mod_foo', 'Foo'));
 
         // An invalid format falls back to the default format.
-        set_config('checksapipluginnameformat', 'invalid', 'tool_updatecheck');
+        set_config('checkspluginnameformat', 'invalid', 'tool_updatecheck');
         $this->assertSame('mod_foo (Foo)', updateinfo::format_plugin_name('mod_foo', 'Foo'));
 
         // A given format overrides the configured format.
