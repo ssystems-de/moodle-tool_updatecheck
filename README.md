@@ -45,7 +45,7 @@ Site administration -> Reports -> Update check
 To configure the plugin and its behaviour, please visit:
 Site administration -> Plugins -> Admin tools -> Update check settings
 
-There, you find six sections:
+There, you find eight sections:
 
 ### 1. General
 
@@ -59,9 +59,23 @@ With this setting, you control the maximum age of the update information in hour
 
 #### Status for missing or outdated update information
 
-With this setting, you control the status which both checks return as long as the update information is missing or older than the configured maximum age, for example because this Moodle site is not able to connect to the Moodle update server or because cron is not running. By default, the checks return the status "Unknown" in this case, which the CLI script admin/cli/checks.php reports with the exit code 3. If your monitoring system should treat this case like a real problem, you can pick a more severe status here.
+With this setting, you control the status which both checks return as long as the update information is missing or older than the configured maximum age, for example because this Moodle site is not able to connect to the Moodle update server or because cron is not running. By default, the checks return the status "Unknown" in this case, which the Checks API / CLI reports with the exit code 3. If your monitoring system should treat this case like a real problem, you can pick a more severe status here.
 
-### 3. Checks API
+### 3. Common Checks settings
+
+The checks of this plugin can be queried in two ways: With the Checks API of Moodle core and with the CLI script of this plugin, see the next two sections and the section "Querying the checks with a monitoring system" below. The settings in this section control how the details of the checks are composed and apply to both ways alike.
+
+#### Plugin name format
+
+With this setting, you control how the plugins are named in the list of available plugin updates which is part of the details of the plugin updates check. You can choose between "tool_updatecheck (Update check)", "Update check (tool_updatecheck)", "Update check" and "tool_updatecheck". This setting does not have any effect on the report page, where the plugin name and the component name are always shown.
+
+#### Include summary lines in the details
+
+With this setting, you control if the details of the checks contain summary lines in addition to the list of available updates: The number of available updates (which repeats the number from the summary, even if it is 0), the number of ignored plugins and of plugins missing from disk with available updates, and the time of the last successful fetch of the update information. These lines allow a monitoring system to get all information from the details alone. If your monitoring system just needs the list of available updates, you can disable the summary lines here. Please note that the CLI script of this plugin does not output the summary lines with the `--verbose` parameter either if they are disabled. This setting does not affect the details which are shown if the update information is missing or outdated.
+
+### 4. Checks API settings
+
+The Checks API is the standard way of Moodle core to expose the health of a Moodle site. The two checks of this plugin are shown on the System status page and can be queried with the CLI script admin/cli/checks.php of Moodle core. However, this CLI script is not able to output multiple lines of details properly and outputs the details of a check only since Moodle 5.2. The setting in this section controls how the lines of the details are separated for the Checks API. It does not affect the CLI script of this plugin, see the next section.
 
 #### Checks API separator
 
@@ -71,11 +85,15 @@ Background: In the Moodle GUI, each piece of information is shown on its own lin
 
 If you are parsing the Checks API details in your monitoring system, you can pick the separator which fits best to your parsing. Please note that the separator characters might also be part of the information itself, for example a slash within a plugin name. This is especially true for the hyphen, which is a common part of release names like "v4.5-r1". The hyphen is always surrounded by one space on each side when it is used as separator. Thus, if you pick the hyphen, your parsing has to include these spaces and has to split the details at " - " instead of "-". The same applies to the slash, the double colon and the hash, which are surrounded by spaces as well, whereas the semicolon is just followed by a space.
 
-#### Plugin name format
+### 5. Checks CLI settings
 
-With this setting, you control how the plugins are named in the list of available plugin updates which is part of the details of the plugin updates check. You can choose between "tool_updatecheck (Update check)", "Update check (tool_updatecheck)", "Update check" and "tool_updatecheck". This setting does not have any effect on the report page, where the plugin name and the component name are always shown.
+In addition to the Checks API, this plugin ships its own CLI script admin/tool/updatecheck/cli/checks.php which runs the two checks of this plugin only. It works and looks like the CLI script of Moodle core, but it outputs the details of the checks on all Moodle versions and it is able to output multiple lines of details, for example one line per plugin with an available update. The setting in this section controls how the lines of the details are separated for this CLI script. It does not affect the Checks API, see the previous section.
 
-### 4. Moodle core updates
+#### Checks CLI separator
+
+With this setting, you control the separator which is put between the individual pieces of information in the details of the checks when they are run by the CLI script of this plugin. By default, each piece of information is output on its own line. If your monitoring system prefers to get the details in one single line, you can pick one of the other separators (a semicolon, a slash, a double colon, a hash or a hyphen), which work in the same way as the Checks API separator.
+
+### 6. Moodle core updates
 
 #### Required maturity of Moodle core updates
 
@@ -97,7 +115,7 @@ With this setting, you control the status which is returned by the Moodle core u
 
 With this setting, you control the number of months after which an available Moodle major update is escalated. As long as the oldest major release which is newer than the installed major release is younger than this number of months, the Moodle core updates check will just return the status "Info". As soon as this major release is older, the check will return the status which is configured for major updates. If you set this setting to 0, a major update is escalated immediately as soon as it is available. If you are running a LTS release and want to stay on it for a longer time, you should set this setting to a higher value like 24 or 36 months instead. And if you do not want major updates to be escalated at all, simply set the status for major updates to "Info".
 
-### 5. Plugin updates
+### 7. Plugin updates
 
 #### Required maturity of plugin updates
 
@@ -111,7 +129,7 @@ With this setting, you control the status which is returned by the plugin update
 
 With this setting, you can select plugins which should be ignored by the plugin updates check. Available updates for these plugins will not affect the status of the check anymore. This is useful if you want or have to stay with the installed version of a particular plugin or if the plugin has been forked locally. On the report page, the available updates for ignored plugins are still listed, but are marked as ignored.
 
-### 6. Notification mails
+### 8. Notification mails
 
 #### Notification recipients
 
@@ -158,7 +176,7 @@ In the CLI script admin/cli/checks.php, this check can be filtered with its refe
 
 ### Details of the checks
 
-The details of both checks repeat the number from the summary on purpose (even if it is 0), so that a monitoring system is able to get all information from the details alone. In plain text, for example in the CLI script admin/cli/checks.php, the details are output as one single line and the individual pieces of information are separated with the configured Checks API separator.
+The details of both checks repeat the number from the summary on purpose (even if it is 0), so that a monitoring system is able to get all information from the details alone. If your monitoring system does not need these summary lines, you can disable them in the settings section "Common Checks settings". In plain text, for example in the CLI script admin/cli/checks.php, the details are output as one single line and the individual pieces of information are separated with the configured Checks API separator.
 
 ### Unknown status
 
@@ -190,9 +208,11 @@ The release date of a major release is derived from the Moodle version number, w
 Querying the checks with a monitoring system
 --------------------------------------------
 
-Moodle core ships with a CLI script which runs the checks and which returns its result in the way which is expected by Nagios compatible monitoring systems: The first line of the output contains the overall status and the exit code of the script is 0 (OK), 1 (WARNING), 2 (CRITICAL) or 3 (UNKNOWN).
+There are two ways to query the checks of this plugin from a monitoring system: The Checks API script of Moodle core and the CLI script of this plugin. Both return their result in the way which is expected by Nagios compatible monitoring systems: The first line of the output contains the overall status and the exit code of the script is 0 (OK), 1 (WARNING), 2 (CRITICAL) or 3 (UNKNOWN).
 
-To query both checks of this plugin at once, run:
+### Using the CLI script of Moodle core (Checks API)
+
+Moodle core ships with the CLI script admin/cli/checks.php which runs all checks of the Checks API. To query both checks of this plugin at once, run:
 
 ```
 sudo -u www-data php admin/cli/checks.php --filter=tool_updatecheck
@@ -209,6 +229,27 @@ Please note that the CLI script only outputs the summary and the details of a ch
 ```
 sudo -u www-data php admin/cli/checks.php --filter=tool_updatecheck --verbose
 ```
+
+The CLI script of Moodle core has two limitations:
+
+* It outputs the details of a check only since Moodle 5.2. Up to Moodle 5.1, the list of available updates is not visible there at all, only the number from the summary.
+* It is not able to output multiple lines of details properly. Thus, the details of the checks are output as one single line and the individual pieces of information are separated with the configured Checks API separator (see the settings section "Checks API settings").
+
+### Using the CLI script of this plugin (Checks CLI)
+
+To overcome these limitations, this plugin ships its own CLI script which runs the two checks of this plugin only:
+
+```
+sudo -u www-data php admin/tool/updatecheck/cli/checks.php
+```
+
+It is a copy of the CLI script of Moodle core 5.2 onwards which is reduced to the checks of this plugin. Thus, it works and looks like the CLI script of Moodle core, including the `--filter` and `--verbose` parameters and the rule that the summary and the details are only output if the check needs attention or if `--verbose` is given. However, it has these advantages:
+
+* It outputs the details of the checks on all supported Moodle versions.
+* It is able to output multiple lines of details. By default, each piece of information is output on its own line, for example one line per plugin with an available update. If your monitoring system prefers one single line, you can pick another separator in the settings section "Checks CLI settings".
+* The first line always names this plugin ("Moodle updates (tool_updatecheck)") together with the most severe status of both checks, instead of naming the check which has the most severe status. This makes the first line easier to match in a monitoring system.
+
+If you are running Moodle up to 5.1 or if you want to get the details on multiple lines, please use this script instead of the CLI script of Moodle core.
 
 
 Notification mails
