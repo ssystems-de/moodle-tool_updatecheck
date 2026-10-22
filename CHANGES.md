@@ -4,6 +4,10 @@ moodle-tool_updatecheck
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-05 - Prepare compatibility for Moodle 5.3.
+
 ### v5.2-r2
 
 * 2026-09-23 - Add setting to reduce the details of the checks API / CLI output regarding the list of available updates.
