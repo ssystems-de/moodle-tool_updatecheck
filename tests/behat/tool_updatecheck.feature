@@ -7,6 +7,7 @@ Feature: Using the update check admin tool
   Background:
     Given I log in as "admin"
 
+  @javascript
   Scenario: The checks are unknown as long as the update information has not been fetched yet
     When I navigate to "Reports > System status" in site administration
     Then I should see "Unknown" in the "Moodle core updates" "table_row"
@@ -14,6 +15,7 @@ Feature: Using the update check admin tool
     And I should see "Unknown" in the "Plugin updates" "table_row"
     And I should see "The update information is missing or outdated" in the "Plugin updates" "table_row"
 
+  @javascript
   Scenario: The status for missing or outdated update information can be configured
     Given the following config values are set as admin:
       | config             | value   | plugin           |
@@ -23,6 +25,7 @@ Feature: Using the update check admin tool
     And I should see "The update information is missing or outdated" in the "Moodle core updates" "table_row"
     And I should see "Warning" in the "Plugin updates" "table_row"
 
+  @javascript
   Scenario: The checks are ok if there are not any updates available
     Given the following "tool_updatecheck > plugin updates" exist:
       | component        | version    |
@@ -33,6 +36,7 @@ Feature: Using the update check admin tool
     And I should see "OK" in the "Plugin updates" "table_row"
     And I should see "There are no plugin updates available." in the "Plugin updates" "table_row"
 
+  @javascript
   Scenario: The checks show a warning if there are updates available
     Given the following "tool_updatecheck > core updates" exist:
       | type  |
@@ -46,6 +50,7 @@ Feature: Using the update check admin tool
     And I should see "Warning" in the "Plugin updates" "table_row"
     And I should see "Plugins with available updates: 1" in the "Plugin updates" "table_row"
 
+  @javascript
   Scenario: A major update which has just been released is just an info
     Given the following "tool_updatecheck > core updates" exist:
       | type  |
@@ -54,6 +59,7 @@ Feature: Using the update check admin tool
     Then I should see "Info" in the "Moodle core updates" "table_row"
     And I should see "Moodle core updates available: 1" in the "Moodle core updates" "table_row"
 
+  @javascript
   Scenario: The status of the checks can be configured
     Given the following "tool_updatecheck > core updates" exist:
       | type  |
@@ -69,6 +75,7 @@ Feature: Using the update check admin tool
     Then I should see "Critical" in the "Moodle core updates" "table_row"
     And I should see "Error" in the "Plugin updates" "table_row"
 
+  @javascript
   Scenario: The checks work even if update notifications are disabled in Moodle core
     Given the following config values are set as admin:
       | updateautocheck | 0 |
@@ -78,6 +85,7 @@ Feature: Using the update check admin tool
     When I navigate to "Reports > System status" in site administration
     Then I should see "Warning" in the "Moodle core updates" "table_row"
 
+  @javascript
   Scenario: Available updates of ignored plugins do not affect the plugin updates check
     Given the following "tool_updatecheck > plugin updates" exist:
       | component        | release  |
@@ -91,6 +99,7 @@ Feature: Using the update check admin tool
     And I navigate to "Reports > Update check" in site administration
     And I should see "Ignored" in the "tool_updatecheck" "table_row"
 
+  @javascript
   Scenario: Available updates of plugins which are missing from disk do not affect the plugin updates check
     # A plugin which is only known in the database is considered as missing from disk by Moodle.
     Given the following config values are set as admin:
@@ -145,6 +154,7 @@ Feature: Using the update check admin tool
     And I should not see "Last successful fetch of the update information: Never"
     And I should see "v99.0-r1" in the "tool_updatecheck" "table_row"
 
+  @javascript
   Scenario: The report tells the admin if the update information could not be fetched
     # An invalid fake response lets the fetch fail like a broken response of the Moodle update server would do.
     Given the following config values are set as admin:
