@@ -4,7 +4,7 @@ moodle-tool_updatecheck
 Changes
 -------
 
-### Unreleased
+### v5.3-r1
 
 * 2026-10-23 - Tests: Run the Behat scenarios which check the system status page with JavaScript, as Moodle core streams the check results into this page since Moodle 5.3 (MDL-79127).
 * 2026-10-05 - Prepare compatibility for Moodle 5.3.
