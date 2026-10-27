@@ -4,6 +4,10 @@ moodle-tool_updatecheck
 Changes
 -------
 
+### Unreleased
+
+* 2026-10-27 - Show a notice on the report page and on the settings page if Moodle core is configured not to check for available updates automatically, as this plugin contacts the Moodle update server nevertheless, and document the data which is sent to the Moodle update server in the README.
+
 ### v4.5-r2
 
 * 2026-09-23 - Add setting to reduce the details of the checks API / CLI output regarding the list of available updates.

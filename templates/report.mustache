@@ -24,6 +24,7 @@
     * fresh - True if the update information is fresh enough to be rated
     * notfreshinfo - The warning which is shown if the update information is not fresh
     * fetchfailureinfo - The information about the last failed attempt to fetch the update information, if any
+    * coreautocheckdisabledinfo - The notice (HTML) which is shown if Moodle core is configured not to fetch the update information automatically, if any
     * fetchbutton - The context of the core/single_button template for the button to fetch the update information right now
     * settingsurl - The URL to the plugin settings
     * statusurl - The URL to the system status report
@@ -43,6 +44,7 @@
         "fresh": true,
         "notfreshinfo": "The update information is missing or older than 25 hours.",
         "fetchfailureinfo": "The last attempt to fetch the update information (Friday, 18 September 2026, 4:00 PM) has failed: Unable to fetch available updates data - unexpected cURL error. (cURL error 28: Connection timed out). Cron will retry it.",
+        "coreautocheckdisabledinfo": "Please note: Moodle core is configured not to check for available updates automatically on this site, either with <code class=\"text-nowrap\">$CFG->disableupdatenotifications</code> in config.php or with the disabled setting <a href=\"https://example.com/admin/settings.php?section=updatenotifications#admin-updateautocheck\">Automatically check for available updates</a>. Nevertheless, this plugin contacts the Moodle update server once a day.",
         "fetchbutton": {
             "id": "single_button_fetch",
             "method": "post",
@@ -100,6 +102,11 @@
                 {{fetchfailureinfo}}
             </div>
         {{/fetchfailureinfo}}
+        {{#coreautocheckdisabledinfo}}
+            <div class="alert alert-info tool_updatecheck-coreautocheckdisabled">
+                {{{coreautocheckdisabledinfo}}}
+            </div>
+        {{/coreautocheckdisabledinfo}}
         {{#fetchbutton}}{{> core/single_button }}{{/fetchbutton}}
         <a class="btn btn-secondary" href="{{statusurl}}">{{#str}} reportstatus, tool_updatecheck {{/str}}</a>
         <a class="btn btn-secondary" href="{{settingsurl}}">{{#str}} settings, tool_updatecheck {{/str}}</a>
