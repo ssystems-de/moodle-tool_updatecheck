@@ -190,6 +190,37 @@ class updateinfo {
     }
 
     /**
+     * Get the notice which makes the admins aware that this plugin contacts the Moodle update server although Moodle core
+     * is configured not to fetch the update information automatically.
+     *
+     * Moodle core does not fetch the update information automatically if update notifications are disabled in config.php
+     * (see \core\task\check_for_updates_task) or if the automatic check is disabled (see \core\update\checker::cron()).
+     *
+     * @return string|null The notice (HTML) or null if Moodle core fetches the update information automatically.
+     */
+    public static function get_core_autocheck_disabled_info(): ?string {
+        global $CFG;
+
+        if (empty($CFG->disableupdatenotifications) && !empty($CFG->updateautocheck)) {
+            return null;
+        }
+
+        // Link the setting of Moodle core, but only if it can be changed at all. If update notifications are disabled in
+        // config.php, Moodle core does not provide the settings page.
+        $settingname = get_string('updateautocheck', 'core_admin');
+        if (empty($CFG->disableupdatenotifications)) {
+            $setting = \html_writer::link(
+                new \moodle_url('/' . $CFG->admin . '/settings.php', ['section' => 'updatenotifications'], 'admin-updateautocheck'),
+                $settingname
+            );
+        } else {
+            $setting = '\'' . $settingname . '\'';
+        }
+
+        return get_string('coreautocheckdisabled', 'tool_updatecheck', $setting);
+    }
+
+    /**
      * Get the installed plugins which are checked for available updates, i.e. all plugins which are not shipped with
      * Moodle core. This includes plugins which are missing from disk (i.e. which are known in the database only), as
      * Moodle core asks the Moodle update server about them as well.
