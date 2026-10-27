@@ -45,10 +45,20 @@ if ($hassiteconfig) {
 
     if ($ADMIN->fulltree) {
         // Create general heading.
+        // If Moodle core does not fetch the update information automatically, make the admin aware that this plugin does.
+        $generalheadingdesc = get_string('setting_generalheading_desc', 'tool_updatecheck', null, true);
+        $coreautocheckdisabledinfo = updateinfo::get_core_autocheck_disabled_info();
+        if ($coreautocheckdisabledinfo !== null) {
+            $generalheadingdesc .= $OUTPUT->notification(
+                $coreautocheckdisabledinfo,
+                \core\output\notification::NOTIFY_INFO,
+                false
+            );
+        }
         $setting = new admin_setting_heading(
             'tool_updatecheck/generalheading',
             get_string('setting_generalheading', 'tool_updatecheck', null, true),
-            get_string('setting_generalheading_desc', 'tool_updatecheck', null, true)
+            $generalheadingdesc
         );
         $settings->add($setting);
 
