@@ -64,6 +64,31 @@ final class report_test extends \advanced_testcase {
     }
 
     /**
+     * Test that the report tells the admin if Moodle core is configured not to fetch the update information automatically.
+     */
+    public function test_core_autocheck_disabled(): void {
+        global $CFG;
+        $this->resetAfterTest();
+
+        // By default, Moodle core fetches the update information automatically.
+        $this->assertNull($this->export_report()['coreautocheckdisabledinfo']);
+
+        // The notice is shown if the automatic check is disabled and it links the setting of Moodle core.
+        set_config('updateautocheck', 0);
+        $info = $this->export_report()['coreautocheckdisabledinfo'];
+        $this->assertStringContainsString('this plugin contacts the Moodle update server once a day', $info);
+        $this->assertStringContainsString('section=updatenotifications#admin-updateautocheck', $info);
+
+        // The notice is shown as well if the update notifications are disabled in config.php, but without the link
+        // as Moodle core does not provide the settings page in this case.
+        set_config('updateautocheck', 1);
+        $CFG->disableupdatenotifications = true;
+        $info = $this->export_report()['coreautocheckdisabledinfo'];
+        $this->assertStringContainsString('this plugin contacts the Moodle update server once a day', $info);
+        $this->assertStringNotContainsString('<a ', $info);
+    }
+
+    /**
      * Test that the report lists the updates and shows the same status as the checks.
      */
     public function test_available_updates(): void {

@@ -51,6 +51,7 @@ class report implements \renderable, \templatable {
             'fresh' => updateinfo::is_fresh(),
             'notfreshinfo' => get_string('reportnotfresh', 'tool_updatecheck', updateinfo::get_maxage()),
             'fetchfailureinfo' => updateinfo::get_last_fetch_failure_info(),
+            'coreautocheckdisabledinfo' => updateinfo::get_core_autocheck_disabled_info(),
             'fetchbutton' => (new \single_button(
                 new \moodle_url('/' . $CFG->admin . '/tool/updatecheck/index.php', ['fetch' => 1]),
                 get_string('reportfetchnow', 'tool_updatecheck'),

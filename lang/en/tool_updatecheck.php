@@ -38,6 +38,7 @@ $string['checkpluginupdatesok'] = 'There are no plugin updates available.';
 $string['checkscli'] = 'Moodle updates';
 $string['checkunknown'] = 'The update information is missing or outdated.';
 $string['checkunknowndetails'] = 'The update information will be fetched from the Moodle update server by cron as soon as possible. If this status persists, please check if cron is running and if this Moodle site is able to connect to the Moodle update server.';
+$string['coreautocheckdisabled'] = 'Please note: Moodle core is configured not to check for available updates automatically on this site, either with <code class="text-nowrap">$CFG->disableupdatenotifications</code> in config.php or with the disabled setting {$a}. Nevertheless, this plugin contacts the Moodle update server once a day with its scheduled task and additionally whenever its checks need fresh update information. Like Moodle core, it sends the installed Moodle version, the list of installed additional plugins with their versions, the country code of the site and, if the site is registered, a hash of the registration secret. If this site should not contact the Moodle update server at all, please uninstall this plugin.';
 $string['lastfetch'] = 'Last successful fetch of the update information: {$a}';
 $string['lastfetchfailure'] = 'The last attempt to fetch the update information ({$a->time}) has failed: {$a->message}. Cron will retry it.';
 $string['notificationdetailslink'] = 'See {$a->url} for more details';
