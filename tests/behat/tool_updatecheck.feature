@@ -129,6 +129,21 @@ Feature: Using the update check admin tool
     And I should see "There are no Moodle core updates available."
     And I should see "There are no plugin updates available."
 
+  Scenario Outline: The <page> tells the admin if Moodle core does not check for updates automatically
+    When I navigate to "<path>" in site administration
+    Then I should not see "this plugin contacts the Moodle update server once a day"
+    And the following config values are set as admin:
+      | <setting> | <value> |
+    And I navigate to "<path>" in site administration
+    And I should see "this plugin contacts the Moodle update server once a day"
+
+    Examples:
+      | page          | path                                          | setting                    | value |
+      | report        | Reports > Update check                        | updateautocheck            | 0     |
+      | report        | Reports > Update check                        | disableupdatenotifications | 1     |
+      | settings page | Plugins > Admin tools > Update check settings | updateautocheck            | 0     |
+      | settings page | Plugins > Admin tools > Update check settings | disableupdatenotifications | 1     |
+
   Scenario: The action link of the checks leads to the report
     When I navigate to "Reports > System status" in site administration
     And I click on "Update check" "link" in the "Moodle core updates" "table_row"

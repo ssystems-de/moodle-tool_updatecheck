@@ -196,6 +196,15 @@ However, the plugin works independently from the update notification settings of
 * The plugin uses its own settings for the required maturity and for considering new builds instead of the settings of Moodle core.
 * The plugin fetches the update information with its own scheduled task once a day.
 
+Please be aware that this means that your Moodle site contacts the Moodle update server once a day as soon as this plugin is installed, even if Moodle core is configured not to check for available updates automatically. Like Moodle core, the plugin sends the following data to the Moodle update server (`https://download.moodle.org/api/1.3/updates.php` or the URL which is set in `$CFG->alternativeupdateproviderurl`):
+
+* The installed Moodle version and branch
+* The list of installed additional plugins with their versions
+* The country code of your site, if it is set
+* A hash of the registration secret, if your site is registered
+
+If update notifications are disabled with `$CFG->disableupdatenotifications` in config.php or if the setting "Automatically check for available updates" is disabled, the report page and the settings page of this plugin show a notice about this fact. Disabling the scheduled task of this plugin does not prevent the communication with the Moodle update server, as the checks queue an adhoc task to fetch the update information as soon as it gets outdated. If your site should not contact the Moodle update server at all, please do not install this plugin.
+
 The checks never fetch the update information from the Moodle update server by themselves as they are expected to return quickly and as they might be called by your monitoring system every minute. If a check detects that the update information is missing or older than the configured maximum age, it queues an adhoc task which will fetch the update information during the next cron run and returns the status "Unknown" in the meantime. If the status "Unknown" persists, please check if cron is running and if your Moodle site is able to connect to the Moodle update server.
 
 ### Moodle major updates
